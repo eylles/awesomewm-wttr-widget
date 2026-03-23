@@ -106,7 +106,7 @@ main () {
         else
             get_weather "$textbox_cache" "$textbox_format"
             get_weather "$tooltip_cache" "$tooltip_format"
-            get_weather "$fullcast_cache" "$fullcast_format"
+            get_weather "$fullcast_cache" "$fullcast_fetch"
             i=0
         fi
         sleep 0.5
