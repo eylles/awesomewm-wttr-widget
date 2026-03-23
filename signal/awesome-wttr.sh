@@ -34,8 +34,8 @@ else
     } > "$config"
 fi
 
-textbox_fetch="${location}?format=${textbox_format}"
-tooltip_fetch="${location}?format=${tooltip_format}"
+textbox_fetch="${location}?format=${textbox_format}&lang=${language}"
+tooltip_fetch="${location}?format=${tooltip_format}&lang=${language}"
 fullcast_fetch="${location}?lang=${language}"
 
 textbox_cache="${cache_path}/textbox"
