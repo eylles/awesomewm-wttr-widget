@@ -2,16 +2,41 @@
 
 export LANG=C
 
+configdir="${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/wttr-daemon"
+config="${configdir}/configrc"
+
 #arguments
 cache_path="$1"
-cache_timeout="$2"
-location="$3"
-textbox_format="$4"
-tooltip_format="$5"
+shift
 
-textbox_format="${location}${textbox_format}"
-tooltip_format="${location}${tooltip_format}"
-fullcast_format="${location}"
+if [ ! -d "$cache_path" ]; then
+    mkdir -p "$cache_path"
+fi
+
+cache_timeout="60"
+location=""
+textbox_format="%c%t/%f+%m"
+tooltip_format="%c%C+🌡️%t/%f+💦%p/%h+💨%w+〽%P+%m"
+language="en"
+
+if [ -f "$config" ]; then
+    . "$config"
+else
+    if [ ! -d "$configdir" ]; then
+        mkdir -p "$configdir"
+    fi
+    {
+        printf '%s=%s\n' "cache_timeout" "$cache_timeout"
+        printf '%s=%s\n' "location" "$location"
+        printf '%s=%s\n' "textbox_format" "$textbox_format"
+        printf '%s=%s\n' "tooltip_format" "$tooltip_format"
+        printf '%s=%s\n' "language" "$language"
+    } > "$config"
+fi
+
+textbox_fetch="${location}?format=${textbox_format}"
+tooltip_fetch="${location}?format=${tooltip_format}"
+fullcast_fetch="${location}?lang=${language}"
 
 textbox_cache="${cache_path}/textbox"
 tooltip_cache="${cache_path}/tooltip"
@@ -56,13 +81,13 @@ get_weather () {
 
 main () {
     if [ ! -f "$textbox_cache" ]; then
-        get_weather "$textbox_cache" "$textbox_format"
+        get_weather "$textbox_cache" "$textbox_fetch"
     fi
     if [ ! -f "$tooltip_cache" ]; then
-        get_weather "$tooltip_cache" "$tooltip_format"
+        get_weather "$tooltip_cache" "$tooltip_fetch"
     fi
-    if [ ! -f "$tooltip_cache" ]; then
-        get_weather "$fullcast_cache" "$fullcast_format"
+    if [ ! -f "$fullcast_cache" ]; then
+        get_weather "$fullcast_cache" "$fullcast_fetch"
     fi
     i=0
     while [ "$cont" -eq 0 ]; do
