@@ -53,7 +53,7 @@ tooltipold="$tooltip"
 textboxsig="wttr::textbox"
 tooltipsig="wttr::tooltip"
 
-cycles_per_second=2
+cycles_per_second=1
 
 cycles=$(( cycles_per_second * cache_timeout ))
 
@@ -109,7 +109,7 @@ main () {
             get_weather "$fullcast_cache" "$fullcast_fetch"
             i=0
         fi
-        sleep 0.5
+        sleep 1
     done
 }
 
