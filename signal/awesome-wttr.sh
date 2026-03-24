@@ -13,7 +13,7 @@ if [ ! -d "$cache_path" ]; then
     mkdir -p "$cache_path"
 fi
 
-cache_timeout="60"
+cache_timeout="600"
 location=""
 textbox_format="%c%t/%f+%m"
 tooltip_format="%c%C+🌡️%t/%f+💦%p/%h+💨%w+〽%P+%m"
