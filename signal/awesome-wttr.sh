@@ -80,17 +80,17 @@ get_weather () {
 }
 
 main () {
-    if [ ! -f "$textbox_cache" ]; then
-        get_weather "$textbox_cache" "$textbox_fetch"
-    fi
-    if [ ! -f "$tooltip_cache" ]; then
-        get_weather "$tooltip_cache" "$tooltip_fetch"
-    fi
-    if [ ! -f "$fullcast_cache" ]; then
-        get_weather "$fullcast_cache" "$fullcast_fetch"
-    fi
     i=0
     while [ "$cont" -eq 0 ]; do
+        if [ ! -f "$textbox_cache" ]; then
+            get_weather "$textbox_cache" "$textbox_fetch"
+        fi
+        if [ ! -f "$tooltip_cache" ]; then
+            get_weather "$tooltip_cache" "$tooltip_fetch"
+        fi
+        if [ ! -f "$fullcast_cache" ]; then
+            get_weather "$fullcast_cache" "$fullcast_fetch"
+        fi
         textbox=$(head "$textbox_cache")
         tooltip=$(head "$tooltip_cache")
         if [ "$textbox" != "$textboxold" ]; then
