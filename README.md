@@ -2,9 +2,7 @@
 
 A simple (lie) widget to get the weather forecast on your statusbar
 
-![Screenshot Bar](./screenshot_widget.png)
-![Screenshot Tooltip](./screenshot_tooltip.png)
-![Screenshot Terminal](./screenshot_terminal.png)
+![Screenshot](./Screenshot.png)
 
 
 ## how to use
