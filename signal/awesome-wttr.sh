@@ -53,10 +53,6 @@ tooltipold="$tooltip"
 textboxsig="wttr::textbox"
 tooltipsig="wttr::tooltip"
 
-cycles_per_second=1
-
-cycles=$(( cycles_per_second * cache_timeout ))
-
 sig_handler () {
     cont=1
 }
@@ -79,18 +75,34 @@ get_weather () {
         -X GET "${url}/${format}" && mv "$tmp" "$cache_file"
 }
 
+shell_true=0
+shell_false=1
+
+is_older_than_timeout () {
+    result=$shell_false
+    now="$(date '+%s')"
+    file="$1"
+    shift
+    timeout="$cache_timeout"
+    file_age="$(stat -c '%Y' "$file")"
+    seconds_delta=$(( now - file_age ))
+    if [ "$seconds_delta" -ge "$timeout" ]; then
+        result=$shell_true
+    fi
+    return $result
+}
+
 main () {
-    i=0
     while [ "$cont" -eq 0 ]; do
-        if [ ! -f "$textbox_cache" ]; then
+        until [ -f "$textbox_cache" ]; do
             get_weather "$textbox_cache" "$textbox_fetch"
-        fi
-        if [ ! -f "$tooltip_cache" ]; then
+        done
+        until [ -f "$tooltip_cache" ]; do
             get_weather "$tooltip_cache" "$tooltip_fetch"
-        fi
-        if [ ! -f "$fullcast_cache" ]; then
+        done
+        until [ -f "$fullcast_cache" ]; do
             get_weather "$fullcast_cache" "$fullcast_fetch"
-        fi
+        done
         textbox=$(head "$textbox_cache")
         tooltip=$(head "$tooltip_cache")
         if [ "$textbox" != "$textboxold" ]; then
@@ -101,14 +113,15 @@ main () {
             awesome-client "awesome.emit_signal('$tooltipsig','$tooltip')"
             tooltipold="$tooltip"
         fi
-        if [ "$i" -le "$cycles" ]; then
-            i=$(( i + 1))
-        else
-            get_weather "$textbox_cache" "$textbox_format"
-            get_weather "$tooltip_cache" "$tooltip_format"
+        while is_older_than_timeout "$textbox_cache"; do
+            get_weather "$textbox_cache" "$textbox_fetch"
+        done
+        while is_older_than_timeout "$tooltip_cache"; do
+            get_weather "$tooltip_cache" "$tooltip_fetch"
+        done
+        while is_older_than_timeout "$fullcast_cache"; do
             get_weather "$fullcast_cache" "$fullcast_fetch"
-            i=0
-        fi
+        done
         sleep 1
     done
 }
