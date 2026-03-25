@@ -30,7 +30,7 @@ local M = {}
 
 function M.new(args)
     local y = args.y or 24
-    local x = mouse.screen.geometry.width - args.x
+    local x = mouse.screen.geometry.width - (args.x or 10)
     local gy = args.gy or 20
     local gx = args.gx or 100
     local terminal = args.terminal
@@ -42,7 +42,9 @@ function M.new(args)
             killed = true
         end
         if not killed then
-            awful.util.spawn(terminal.." -g "..gx.."x"..gy.."+"..x.."+"..y.." -T "..program.." -e "..program.." "..options.."")
+            awful.util.spawn(
+                terminal.." -g "..gx.."x"..gy.."+"..x.."+"..y.." -T "..program.." -e "..program.." "..options..""
+            )
             local t
             t = timer.start_new(0.5, function()
                 for c in awful.client.iterate(function (c) return c.name == program end, nil, mouse.screen) do
