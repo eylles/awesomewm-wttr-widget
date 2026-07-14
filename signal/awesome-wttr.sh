@@ -92,6 +92,9 @@ is_older_than_timeout () {
     return $result
 }
 
+r="$(printf '%03d\n' "$(shuf -i 1-255 -n 1)")"
+time="1.${r}"
+
 main () {
     while [ "$cont" -eq 0 ]; do
         until [ -f "$textbox_cache" ]; do
@@ -122,7 +125,7 @@ main () {
         while is_older_than_timeout "$fullcast_cache"; do
             get_weather "$fullcast_cache" "$fullcast_fetch"
         done
-        sleep 1
+        sleep "$time"
     done
 }
 
